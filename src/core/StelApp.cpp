@@ -205,6 +205,9 @@ Q_IMPORT_PLUGIN(VtsStelPluginInterface)
 
 #ifdef USE_STATIC_PLUGIN_ONLINEQUERIES
 Q_IMPORT_PLUGIN(OnlineQueriesPluginInterface)
+
+#ifdef USE_STATIC_PLUGIN_PLANES
+Q_IMPORT_PLUGIN(PlanesStelPluginInterface)
 #endif
 
 // Initialize static variables
