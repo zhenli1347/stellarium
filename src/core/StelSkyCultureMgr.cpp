@@ -606,6 +606,7 @@ table, th, td {
 }
 </style>
 )";
+	text += "<h1>" + name + "</h1>";
 	const QRegularExpression sectionNamePat("^## +(.+)$", QRegularExpression::MultilineOption);
 	QString prevSectionName;
 	qsizetype prevBodyStartPos = -1;
@@ -620,7 +621,7 @@ table, th, td {
 			const auto sectionText = convertMarkdownLevel2Section(markdown, prevSectionName, prevBodyStartPos, nameStartPos);
 			if (!sectionText.isEmpty())
 			{
-				text += "<h1>" + prevSectionName + "</h1>";
+				text += "<h2>" + prevSectionName + "</h2>";
 				text += sectionText;
 			}
 		}
@@ -632,7 +633,7 @@ table, th, td {
 		const auto sectionText = convertMarkdownLevel2Section(markdown, prevSectionName, prevBodyStartPos, markdown.size());
 		if (!sectionText.isEmpty())
 		{
-			text += "<h1>" + prevSectionName + "</h1>\n";
+			text += "<h2>" + prevSectionName + "</h2>\n";
 			text += sectionText;
 		}
 	}
