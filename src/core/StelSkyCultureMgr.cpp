@@ -554,9 +554,12 @@ QStringList StelSkyCultureMgr::getSkyCultureListIDs(void) const
 }
 
 QString StelSkyCultureMgr::convertMarkdownLevel2Section(const QString& markdown, const QString& sectionName,
-                                                  const qsizetype bodyStartPos, const qsizetype bodyEndPos)
+                                                        const qsizetype bodyStartPos, const qsizetype bodyEndPos,
+                                                        const StelTranslator& trans)
 {
 	auto text = markdown.mid(bodyStartPos, bodyEndPos - bodyStartPos);
+	text.replace(QRegularExpression("^\n*|\n*$"), "");
+	text = trans.qtranslate(text);
 
 	if (sectionName.trimmed() == "References")
 	{
@@ -584,6 +587,14 @@ QString StelSkyCultureMgr::convertMarkdownLevel2Section(const QString& markdown,
 
 QString StelSkyCultureMgr::descriptionMarkdownToHTML(const QString& markdown, const QString& descrPath)
 {
+	// Section names should be available for translation
+	(void)NC_("Introduction", "Name of a section in sky culture description");
+	(void)NC_("Description" , "Name of a section in sky culture description");
+	(void)NC_("Extras"      , "Name of a section in sky culture description");
+	(void)NC_("References"  , "Name of a section in sky culture description");
+	(void)NC_("Authors"     , "Name of a section in sky culture description");
+	const StelTranslator& trans = StelApp::getInstance().getLocaleMgr().getSkyTranslator();
+
 	const QRegularExpression headerPat("^# +(.+)$", QRegularExpression::MultilineOption);
 	const auto match = headerPat.match(markdown);
 	QString name;
@@ -606,7 +617,7 @@ table, th, td {
 }
 </style>
 )";
-	text += "<h1>" + name + "</h1>";
+	text += "<h1>" + trans.qtranslate(name, "sky culture") + "</h1>";
 	const QRegularExpression sectionNamePat("^## +(.+)$", QRegularExpression::MultilineOption);
 	QString prevSectionName;
 	qsizetype prevBodyStartPos = -1;
@@ -618,10 +629,10 @@ table, th, td {
 		const auto bodyStartPos = match.capturedEnd(0);
 		if (!prevSectionName.isEmpty())
 		{
-			const auto sectionText = convertMarkdownLevel2Section(markdown, prevSectionName, prevBodyStartPos, nameStartPos);
+			const auto sectionText = convertMarkdownLevel2Section(markdown, prevSectionName, prevBodyStartPos, nameStartPos, trans);
 			if (!sectionText.isEmpty())
 			{
-				text += "<h2>" + prevSectionName + "</h2>";
+				text += "<h2>" + qc_(prevSectionName, "Name of a section in sky culture description") + "</h2>";
 				text += sectionText;
 			}
 		}
@@ -630,10 +641,10 @@ table, th, td {
 	}
 	if (prevBodyStartPos >= 0)
 	{
-		const auto sectionText = convertMarkdownLevel2Section(markdown, prevSectionName, prevBodyStartPos, markdown.size());
+		const auto sectionText = convertMarkdownLevel2Section(markdown, prevSectionName, prevBodyStartPos, markdown.size(), trans);
 		if (!sectionText.isEmpty())
 		{
-			text += "<h2>" + prevSectionName + "</h2>\n";
+			text += "<h2>" + qc_(prevSectionName, "Name of a section in sky culture description") + "</h2>\n";
 			text += sectionText;
 		}
 	}
