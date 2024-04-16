@@ -591,8 +591,6 @@ QString StelSkyCultureMgr::convertMarkdownLevel2Section(const QString& markdown,
 QString StelSkyCultureMgr::descriptionMarkdownToHTML(const QString& markdown, const QString& descrPath)
 {
 	// Section names should be available for translation
-	(void)NC_("Introduction", "Name of a section in sky culture description");
-	(void)NC_("Description" , "Name of a section in sky culture description");
 	(void)NC_("Extras"      , "Name of a section in sky culture description");
 	(void)NC_("References"  , "Name of a section in sky culture description");
 	(void)NC_("Authors"     , "Name of a section in sky culture description");
@@ -635,7 +633,8 @@ table, th, td {
 			const auto sectionText = convertMarkdownLevel2Section(markdown, prevSectionName, prevBodyStartPos, nameStartPos, trans);
 			if (!sectionText.isEmpty())
 			{
-				text += "<h2>" + qc_(prevSectionName, "Name of a section in sky culture description") + "</h2>";
+				if(prevSectionName != "Introduction" && prevSectionName != "Description")
+					text += "<h2>" + qc_(prevSectionName, "Name of a section in sky culture description") + "</h2>";
 				text += sectionText;
 			}
 		}
