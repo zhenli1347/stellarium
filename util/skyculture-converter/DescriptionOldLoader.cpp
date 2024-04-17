@@ -1,5 +1,6 @@
 #include "DescriptionOldLoader.hpp"
 
+#include <set>
 #include <deque>
 #include <QDir>
 #include <QFile>
@@ -280,7 +281,7 @@ void cleanupWhitespace(QString& markdown)
 	markdown.replace(htmlImageRegex, R"rep(![\1\3](\2))rep");
 
 	// Replace simple HTML hyperlinks with the Markdown ones
-	markdown.replace(QRegularExpression("([^>])\\s*<a\\s+href=\"([^\"]+)\"(?:\\s[^>]*)?>([^<]+)</a\\s*>\\s*([^<])"), "\\1[\\3](\\2)\\4");
+	markdown.replace(QRegularExpression("([^>])<a\\s+href=\"([^\"]+)\"(?:\\s[^>]*)?>([^<]+)</a\\s*>\\s*([^<])"), "\\1[\\3](\\2)\\4");
 
 	// Replace simple HTML paragraphs with the Markdown ones
 	markdown.replace(QRegularExpression("<p>([^<]+)</p>"), "\n\\1\n");
@@ -720,13 +721,16 @@ bool DescriptionOldLoader::dump(const QString& outDir) const
 		po_message_set_msgstr(headerMsg, header.toStdString().c_str());
 		po_message_insert(iterator, headerMsg);
 
+		std::set<DictEntry> emittedEntries;
 		for(const auto& entry : dictIt.value())
 		{
+			if(emittedEntries.find(entry) != emittedEntries.end()) continue;
 			const auto msg = po_message_create();
 			po_message_set_extracted_comments(msg, entry.comment.toStdString().c_str());
 			po_message_set_msgid(msg, entry.english.toStdString().c_str());
 			po_message_set_msgstr(msg, entry.translated.toStdString().c_str());
 			po_message_insert(iterator, msg);
+			emittedEntries.insert(entry);
 		}
 		po_message_iterator_free(iterator);
 		po_xerror_handler handler = {gettextpo_xerror, gettextpo_xerror2};

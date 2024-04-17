@@ -1,5 +1,6 @@
 #pragma once
 
+#include <tuple>
 #include <vector>
 #include <QHash>
 #include <QString>
@@ -14,6 +15,10 @@ class DescriptionOldLoader
 		QString comment;
 		QString english;
 		QString translated;
+		bool operator<(const DictEntry& other) const
+		{
+			return std::tie(comment,english,translated) < std::tie(other.comment,other.english,other.translated);
+		}
 	};
 	using TranslationDict = std::vector<DictEntry>;
 	QHash<QString/*locale*/, TranslationDict> translations;
