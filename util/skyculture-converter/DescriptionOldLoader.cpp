@@ -209,15 +209,15 @@ QString readReferencesFile(const QString& inDir)
 		{
 			qWarning() << "Warning: record at line" << lineNumber << "in references file"
 			           << QDir::toNativeSeparators(path) << " has wrong format (RefID: " << ref.at(0) << ")! Let's use fallback mode...";
-			reference.append(QString(" %1. %2\n").arg(ref[0], ref[1]));
+			reference.append(QString(" - [#%1]: %2\n").arg(ref[0], ref[1]));
 			readOk++;
 		}
 		else
 		{
 			if (ref.at(2).isEmpty())
-				reference.append(QString(" %1. %2\n").arg(ref[0], ref[1]));
+				reference.append(QString(" - [#%1]: %2\n").arg(ref[0], ref[1]));
 			else
-				reference.append(QString(" %1. [%2](%3)\n").arg(ref[0], ref[1], ref[2]));
+				reference.append(QString(" - [#%1]: [%2](%3)\n").arg(ref[0], ref[1], ref[2]));
 			readOk++;
 		}
 	}
