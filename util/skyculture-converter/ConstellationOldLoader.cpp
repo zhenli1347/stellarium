@@ -417,7 +417,7 @@ bool ConstellationOldLoader::dumpConstellationsJSON(std::ostream& s) const
 			     "      },\n";
 		}
 		s << "      \"common_name\": {\"english\": \"" << c.englishName.toStdString() <<
-		                                   (c.nativeName.isEmpty() ? "" : "\", \"native\": \"" + c.nativeName.toStdString() + "\"") << "}\n"
+		                                   (c.nativeName.isEmpty() ? "\"" : "\", \"native\": \"" + c.nativeName.toStdString() + "\"") << "}\n"
 		     "    }";
 		if(&c != &constellations.back())
 			s << ",\n";
