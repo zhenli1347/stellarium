@@ -36,6 +36,17 @@ void htmlListsToMarkdown(QString& string)
 	}
 }
 
+void formatDescriptionLists(QString& string)
+{
+	// We don't convert DLs into Markdown (since there's no such
+	// concept there), but we want them to be editor-friendly.
+	string.replace(QRegularExpression(" *(<dl\\s*>)\\s*(<dt\\s*>)"), "\\1\n \\2");
+	string.replace(QRegularExpression("( *<dt\\s*>)"), " \\1");
+//	string.replace(QRegularExpression("(<dd\\s*>)"), "\n\t\\1");
+	string.replace(QRegularExpression("(</dd\\s*>)"), "\\1\n");
+	string.replace(QRegularExpression("(</dd\\s*>)\n </dl>"), "\\1\n</dl>");
+}
+
 void htmlTablesToMarkdown(QString& string)
 {
 	// Using a single regex to find all tables without merging them into
@@ -289,6 +300,8 @@ void cleanupWhitespace(QString& markdown)
 	markdown.replace(QRegularExpression("(<p(?:\\s+[^>]*)*>)"), "\n\\1");
 
 	htmlTablesToMarkdown(markdown);
+
+	formatDescriptionLists(markdown);
 
 	htmlListsToMarkdown(markdown);
 
