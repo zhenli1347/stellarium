@@ -370,7 +370,7 @@ struct Section
 
 std::vector<Section> splitToSections(const QString& markdown)
 {
-	const QRegularExpression sectionHeaderPattern("^\\s*((#+)\\s+(.*[^\\s])\\s*)$", QRegularExpression::MultilineOption);
+	const QRegularExpression sectionHeaderPattern("^[ \t]*((#+)\\s+(.*[^\\s])\\s*)$", QRegularExpression::MultilineOption);
 	std::vector<Section> sections;
 	for(auto matches = sectionHeaderPattern.globalMatch(markdown); matches.hasNext(); )
 	{
