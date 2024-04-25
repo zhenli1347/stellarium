@@ -318,10 +318,9 @@ void addMissingTextToMarkdown(QString& markdown, const QString& inDir, const QSt
 {
 	// Add missing "Introduction" heading if we have a headingless intro text
 	if(!markdown.contains(QRegularExpression("^\\s*# [^\n]+\n+\\s*##\\s*Introduction\n")))
-	{
 		markdown.replace(QRegularExpression("^(\\s*# [^\n]+\n+)(\\s*[^#])"), "\\1## Introduction\n\n\\2");
-		markdown.replace(QRegularExpression("(\n## Introduction\n[^#]+\n)(\\s*#)"), "\\1## Description\n\n\\2");
-	}
+	if(!markdown.contains("\n## Description\n"))
+	   markdown.replace(QRegularExpression("(\n## Introduction\n[^#]+\n)(\\s*#)"), "\\1## Description\n\n\\2");
 
 	// Add some sections the info for which is contained in info.ini in the old format
 	if(markdown.contains(QRegularExpression("\n##\\s+(?:References|External\\s+links)\\s*\n")))
