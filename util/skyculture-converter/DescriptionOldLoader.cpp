@@ -391,7 +391,7 @@ std::vector<Section> splitToSections(const QString& markdown)
 	{
 		if(n+1 < sections.size())
 			sections[n].body = markdown.mid(sections[n].bodyStartPos,
-			                                sections[n+1].headerLineStartPos - sections[n].bodyStartPos);
+			                                std::max(0, sections[n+1].headerLineStartPos - sections[n].bodyStartPos));
 		else
 			sections[n].body = markdown.mid(sections[n].bodyStartPos);
 	}
