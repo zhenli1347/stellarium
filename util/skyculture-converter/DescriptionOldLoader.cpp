@@ -96,12 +96,12 @@ void htmlTablesToMarkdown(QString& string)
 		}
 		if(!table.contains(QRegularExpression("^\\s*<tr\\s*>")))
 		{
-			qWarning() << "Unexpected table contents (expected it to start with <tr>), keeping the table in HTML form";
+			qWarning().noquote() << "Unexpected table contents (expected it to start with <tr>), keeping the table in HTML form. Table:\n" << table;
 			continue;
 		}
 		if(!table.contains(QRegularExpression("</tr\\s*>\\s*$")))
 		{
-			qWarning() << "Unexpected table contents (expected it to end with </tr>), keeping the table in HTML form";
+			qWarning().noquote() << "Unexpected table contents (expected it to end with </tr>), keeping the table in HTML form. Table:\n" << table;
 			continue;
 		}
 		auto rows = table.split(QRegularExpression("\\s*</tr\\s*>\\s*"), SkipEmptyParts);
@@ -503,6 +503,7 @@ void DescriptionOldLoader::load(const QString& inDir, const QString& poDir, cons
 	}
 	const auto html = englishDescrFile.readAll();
 	locateAllInlineImages(html);
+	qDebug() << "Processing English description...";
 	markdown = convertHTMLToMarkdown(html);
 
 	auto englishSections = splitToSections(markdown);
@@ -574,6 +575,7 @@ void DescriptionOldLoader::load(const QString& inDir, const QString& poDir, cons
 			qCritical().noquote() << "Failed to open file" << path << "\n";
 			continue;
 		}
+		qDebug().nospace() << "Processing description for locale " << locale << "...";
 		const auto translationMD = convertHTMLToMarkdown(file.readAll()).replace(QRegularExpression("<notr>([^<]+)</notr>"), "\\1");
 		const auto translatedSections = splitToSections(translationMD);
 		if(translatedSections.size() != englishSections.size())
@@ -582,6 +584,14 @@ void DescriptionOldLoader::load(const QString& inDir, const QString& poDir, cons
 			                                << ") in description for locale " << locale
 			                                << " doesn't match that of the English description ("
 			                                << englishSections.size() << "). Skipping this translation.";
+			auto dbg = qDebug().nospace().noquote();
+			dbg << " ** English section titles:\n";
+			for(const auto& sec : englishSections)
+				dbg << sec.title << "\n";
+			dbg << " ** Translated section titles:\n";
+			for(const auto& sec : translatedSections)
+				dbg << sec.title << "\n";
+			dbg << "\n____________________________________________\n";
 			continue;
 		}
 
