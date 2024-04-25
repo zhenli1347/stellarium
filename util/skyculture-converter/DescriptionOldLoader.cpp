@@ -520,7 +520,14 @@ void DescriptionOldLoader::load(const QString& inDir, const QString& poDir, cons
 	std::deque<int> subsections;
 	for(int n = signed(englishSections.size()) - 1; n >= 0; --n)
 	{
-		if(englishSections[n].level > 2 || (englishSections[n].level == 2 && !isStandardTitle(englishSections[n].title)))
+		const bool hasStandardTitle = isStandardTitle(englishSections[n].title);
+		if(hasStandardTitle && englishSections[n].level != 2)
+		{
+			qWarning() << "Warning: found a section titled" << englishSections[n].title
+			           << "but having level" << englishSections[n].level << " instead of 2";
+		}
+
+		if(englishSections[n].level > 2 || (englishSections[n].level == 2 && !hasStandardTitle))
 		{
 			subsections.push_front(n);
 		}
