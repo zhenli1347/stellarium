@@ -292,7 +292,7 @@ void cleanupWhitespace(QString& markdown)
 	markdown.replace(htmlImageRegex, R"rep(![\1\3](\2))rep");
 
 	// Replace simple HTML hyperlinks with the Markdown ones
-	markdown.replace(QRegularExpression("([^>])<a\\s+href=\"([^\"]+)\"(?:\\s[^>]*)?>([^<]+)</a\\s*>[ \t]*([^<])"), "\\1[\\3](\\2)\\4");
+	markdown.replace(QRegularExpression("([^>])<a\\s+href=\"([^\"]+)\"(?:\\s[^>]*)?>([^<]+)</a\\s*>([^<])"), "\\1[\\3](\\2)\\4");
 
 	// Replace simple HTML paragraphs with the Markdown ones
 	markdown.replace(QRegularExpression("<p>([^<]+)</p>"), "\n\\1\n");
