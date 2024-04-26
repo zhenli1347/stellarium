@@ -17,7 +17,8 @@ constexpr auto SkipEmptyParts = Qt::SkipEmptyParts;
 constexpr auto SkipEmptyParts = QString::SkipEmptyParts;
 #endif
 
-const QRegularExpression htmlImageRegex(R"reg(<img\b[^>/]*(?:\s+alt="([^"]+)")?\s+src="([^"]+)"(?:\s+alt="([^"]+)")?\s*/?>)reg");
+const QRegularExpression htmlSimpleImageRegex(R"reg(<img\b[^>/]*(?:\s+alt="([^"]+)")?\s+src="([^"]+)"(?:\s+alt="([^"]+)")?\s*/?>)reg");
+const QRegularExpression htmlGeneralImageRegex(R"reg(<img\b[^>/]*\s+src="([^"]+)"[^>/]*/?>)reg");
 
 void htmlListsToMarkdown(QString& string)
 {
@@ -289,7 +290,7 @@ void cleanupWhitespace(QString& markdown)
 	markdown.replace(QRegularExpression("<em>\\s*([^<]+)\\s*</em>"), "*\\1*");
 
 	// Replace simple HTML images with the Markdown ones
-	markdown.replace(htmlImageRegex, R"rep(![\1\3](\2))rep");
+	markdown.replace(htmlSimpleImageRegex, R"rep(![\1\3](\2))rep");
 
 	// Replace simple HTML hyperlinks with the Markdown ones
 	markdown.replace(QRegularExpression("([^>])<a\\s+href=\"([^\"]+)\"(?:\\s[^>]*)?>([^<]+)</a\\s*>([^<])"), "\\1[\\3](\\2)\\4");
@@ -482,10 +483,10 @@ void DescriptionOldLoader::loadTranslationsOfNames(const QString& poDir, const Q
 
 void DescriptionOldLoader::locateAllInlineImages(const QString& html)
 {
-	for(auto matches = htmlImageRegex.globalMatch(html); matches.hasNext(); )
+	for(auto matches = htmlGeneralImageRegex.globalMatch(html); matches.hasNext(); )
 	{
 		const auto& match = matches.next();
-		imageHRefs.emplace_back(match.captured(2));
+		imageHRefs.emplace_back(match.captured(1));
 	}
 }
 
