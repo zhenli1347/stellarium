@@ -286,8 +286,8 @@ void cleanupWhitespace(QString& markdown)
 	markdown.replace(QRegularExpression("<br\\s*/?>"), "\n\n");
 
 	// Replace simple HTML italics with the Markdown ones
-	markdown.replace(QRegularExpression("<i>\\s*([^<]+)\\s*</i>"), "*\\1*");
-	markdown.replace(QRegularExpression("<em>\\s*([^<]+)\\s*</em>"), "*\\1*");
+	markdown.replace(QRegularExpression("<i>\\s*([^<\\s]{1,2}|[^<\\s][^<]+[^<\\s])\\s*</i>"), "*\\1*");
+	markdown.replace(QRegularExpression("<em>\\s*([^<\\s]{1,2}|[^<\\s][^<]+[^<\\s])\\s*</em>"), "*\\1*");
 
 	// Replace simple HTML images with the Markdown ones
 	markdown.replace(htmlSimpleImageRegex, R"rep(![\1\3](\2))rep");
@@ -295,10 +295,8 @@ void cleanupWhitespace(QString& markdown)
 	// Replace simple HTML hyperlinks with the Markdown ones
 	markdown.replace(QRegularExpression("([^>])<a\\s+href=\"([^\"]+)\"(?:\\s[^>]*)?>([^<]+)</a\\s*>([^<])"), "\\1[\\3](\\2)\\4");
 
-	// Replace simple HTML paragraphs with the Markdown ones
-	markdown.replace(QRegularExpression("<p>([^<]+)</p>"), "\n\\1\n");
-	// Place those paragraphs that we haven't handled each on a separate line
-	markdown.replace(QRegularExpression("(<p(?:\\s+[^>]*)*>)"), "\n\\1");
+	// Replace HTML paragraphs with the Markdown ones
+	markdown.replace(QRegularExpression("<p(?:\\s+[^>]*)*>([^<]+)</p>"), "\n\\1\n");
 
 	htmlTablesToMarkdown(markdown);
 
