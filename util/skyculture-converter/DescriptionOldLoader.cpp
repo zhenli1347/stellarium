@@ -278,10 +278,6 @@ void cleanupWhitespace(QString& markdown)
 	markdown.replace(QRegularExpression("<notr\\s*>"), notrOpenPlaceholder);
 	markdown.replace(QRegularExpression("</notr\\s*>"), notrClosePlaceholder);
 
-	// Replace simple HTML headings with corresponding Markdown ones
-	for(int n = 1; n <= 6; ++n)
-		markdown.replace(QRegularExpression(QString("<h%1(?:\\s+[^>]*)*>([^<]+)</h%1>").arg(n)), "\n" + QString(n, QChar('#'))+" \\1\n");
-
 	// Replace HTML line breaks with the Markdown ones
 	markdown.replace(QRegularExpression("<br\\s*/?>"), "\n\n");
 
@@ -297,6 +293,10 @@ void cleanupWhitespace(QString& markdown)
 
 	// Replace HTML paragraphs with the Markdown ones
 	markdown.replace(QRegularExpression("<p(?:\\s+[^>]*)*>([^<]+)</p>"), "\n\\1\n");
+
+	// Replace simple HTML headings with corresponding Markdown ones
+	for(int n = 1; n <= 6; ++n)
+		markdown.replace(QRegularExpression(QString("<h%1(?:\\s+[^>]*)*>([^<]+)</h%1>").arg(n)), "\n" + QString(n, QChar('#'))+" \\1\n");
 
 	htmlTablesToMarkdown(markdown);
 
