@@ -637,7 +637,9 @@ void DescriptionOldLoader::load(const QString& inDir, const QString& poDir, cons
 				key += ' ';
 				key += keySubSection.title;
 				key += "\n\n";
-				key += keySubSection.body;
+				if(keySubSection.body.startsWith(" 1. ") || keySubSection.body.startsWith(" - "))
+					markdown += ' '; // undo trimming effect on lists
+				key += keySubSection.body.trimmed();
 				key += "\n\n";
 				cleanupWhitespace(key);
 				key = key.trimmed();
@@ -648,7 +650,9 @@ void DescriptionOldLoader::load(const QString& inDir, const QString& poDir, cons
 				value += ' ';
 				value += valueSubSection.title;
 				value += "\n\n";
-				value += valueSubSection.body;
+				if(valueSubSection.body.startsWith(" 1. ") || valueSubSection.body.startsWith(" - "))
+					markdown += ' '; // undo trimming effect on lists
+				value += valueSubSection.body.trimmed();
 				value += "\n\n";
 				cleanupWhitespace(value);
 				value = value.trimmed();
